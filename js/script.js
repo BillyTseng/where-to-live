@@ -18,17 +18,36 @@ function loadData() {
     var cityStr = $('#city').val();
     var address = streetStr + ", " + cityStr;
     $greeting.text('So, you want to live at ' + address + '?');
-    var apiKey = "YOUR_API_KEY";
+    var streetViewApiKey = "URAPIKEY";
     var imgStr = "";
     imgStr += "https://maps.googleapis.com/maps/api/streetview?";
     imgStr += "size=600x400&";
     imgStr += "location=" + address + "&";
-    imgStr += "key=" + apiKey;
+    imgStr += "key=" + streetViewApiKey;
 
     var htmlStr = "";
     htmlStr += '<img class="bgimg" ';
     htmlStr += 'src="' + imgStr + '">';
     $body.append(htmlStr);
+
+    //NYT AJAX request
+    var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
+    url += '?' + $.param({
+      'api-key': "URAPIKEY",
+      'q': cityStr
+    });
+
+    $.getJSON( url, function( data ) {
+      // console.log(data);
+      $nytHeaderElem.text('New York Times Articles About ' + cityStr);
+      var items = [];
+      $.each( data.response.docs, function( key, val ) {
+        items.push( '<li class="article">' +
+         '<a href="'+ val.web_url+'">'+val.headline.main + '</a>' +
+         '<p>' + val.snippet + '</p>' + "</li>" );
+      });
+      $nytElem.append(items.join(""));
+    });
     return false;
 };
 
