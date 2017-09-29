@@ -13,7 +13,7 @@ function loadData() {
 
     // load streetview
 
-    // YOUR CODE GOES HERE!
+    // Street view request
     var streetStr = $('#street').val();
     var cityStr = $('#city').val();
     var address = streetStr + ", " + cityStr;
@@ -53,6 +53,10 @@ function loadData() {
     });
 
     //Wikipedia AJAX request
+    var wikiRequestTimeout = setTimeout(function() {
+      $wikiElem.text('Wikipedia Articles Could Not Be Loaded.');
+    }, 5000);
+
     $.ajax( {
         url: 'https://en.wikipedia.org/w/api.php?action=opensearch&search='
             + cityStr +'&prop=revisions&rvprop=content&format=json',
@@ -65,7 +69,7 @@ function loadData() {
           var url = 'https://www.wikipedia.org/wiki/' + articleStr;
           $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
         }
-
+        clearTimeout(wikiRequestTimeout);
     } );
     return false;
 };
